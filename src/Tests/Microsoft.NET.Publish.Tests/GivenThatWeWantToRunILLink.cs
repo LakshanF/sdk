@@ -593,6 +593,9 @@ namespace Microsoft.NET.Publish.Tests
 
             // Please keep list below sorted and de-duplicated
             var expectedOutput = new[] {
+                "ILLink : Trim analysis warning IL2026: Internal.Runtime.InteropServices.ComponentActivator.GetFunctionPointer(",
+                "ILLink : Trim analysis warning IL2026: Internal.Runtime.InteropServices.ComponentActivator.LoadAssemblyAndGetFunctionPointer(",
+                "ILLink : Trim analysis warning IL2026: Internal.Runtime.InteropServices.InMemoryAssemblyLoader.LoadInMemoryAssembly(",
                 "ILLink : Trim analysis warning IL2026: System.ComponentModel.Design.DesigntimeLicenseContextSerializer.DeserializeUsingBinaryFormatter(DesigntimeLicenseContextSerializer.StreamWrapper,String,RuntimeLicenseContext",
                 "ILLink : Trim analysis warning IL2072: System.Diagnostics.Tracing.EventSource.EnsureDescriptorsInitialized(",
                 "ILLink : Trim analysis warning IL2026: System.Resources.ManifestBasedResourceGroveler.CreateResourceSet(Stream,Assembly",
@@ -682,6 +685,12 @@ namespace Microsoft.NET.Publish.Tests
             {
                 JObject runtimeConfig = JObject.Parse(runtimeConfigContents);
                 runtimeConfig["runtimeOptions"]["configProperties"]
+                    ["Internal.Runtime.InteropServices.ComponentActivator.IsSupported"].Value<bool>()
+                    .Should().Be(false);
+                runtimeConfig["runtimeOptions"]["configProperties"]
+                    ["Internal.Runtime.InteropServices.InMemoryAssemblyLoader.IsSupported"].Value<bool>()
+                    .Should().Be(false);
+                runtimeConfig["runtimeOptions"]["configProperties"]
                     ["System.StartupHookProvider.IsSupported"].Value<bool>()
                     .Should().Be(false);
                 runtimeConfig["runtimeOptions"]["configProperties"]
@@ -693,6 +702,8 @@ namespace Microsoft.NET.Publish.Tests
             }
             else
             {
+                runtimeConfigContents.Should().NotContain("Internal.Runtime.InteropServices.ComponentActivator.IsSupported");
+                runtimeConfigContents.Should().NotContain("Internal.Runtime.InteropServices.InMemoryAssemblyLoader.IsSupported");
                 runtimeConfigContents.Should().NotContain("System.StartupHookProvider.IsSupported");
                 runtimeConfigContents.Should().NotContain("System.Resources.ResourceManager.AllowCustomResourceTypes");
                 runtimeConfigContents.Should().NotContain("System.ComponentModel.TypeConverter.EnableUnsafeBinaryFormatterInDesigntimeLicenseContextSerialization");

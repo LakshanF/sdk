@@ -45,6 +45,21 @@ Copyright (c) .NET Foundation. All rights reserved.
     <EnableUnsafeBinaryFormatterInDesigntimeLicenseContextSerialization>false</EnableUnsafeBinaryFormatterInDesigntimeLicenseContextSerialization>
   </PropertyGroup>
 
+  <!-- We disable native hosting for trimmed apps here so that the feature
+       switch can flow to the runtimeconfig.json. Native Hosts are disabled
+       by default since they may require assemblies, types or members that
+       could be removed by the linker, causing a trimmed app to crash. -->
+  <PropertyGroup Condition="'$(_EnableCallingManagedFunctionFromNative)' == '' And
+                            '$(PublishTrimmed)' == 'true' And
+                            $([MSBuild]::VersionGreaterThanOrEquals($(_TargetFrameworkVersionWithoutV), '6.0'))">
+    <_EnableCallingManagedFunctionFromNative>false</_EnableCallingManagedFunctionFromNative>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(_EnableIJWHostActivation)' == '' And
+                            '$(PublishTrimmed)' == 'true' And
+                            $([MSBuild]::VersionGreaterThanOrEquals($(_TargetFrameworkVersionWithoutV), '6.0'))">
+    <_EnableIJWHostActivation>false</_EnableIJWHostActivation>
+  </PropertyGroup>
+
   <PropertyGroup Condition="'$(SuppressTrimAnalysisWarnings)' == '' And ('$(EnableTrimAnalyzer)' == 'true' Or '$(PublishTrimmed)' == 'true')">
     <!-- Trim analysis warnings are suppressed for .NET < 6. -->
     <SuppressTrimAnalysisWarnings Condition="$([MSBuild]::VersionLessThan('$(TargetFrameworkVersion)', '6.0'))">true</SuppressTrimAnalysisWarnings>

@@ -351,6 +351,16 @@ Copyright (c) .NET Foundation. All rights reserved.
     -->
 
   <ItemGroup>
+    <RuntimeHostConfigurationOption Include="Internal.Runtime.InteropServices.ComponentActivator.IsSupported"
+                                    Condition="'$(_EnableCallingManagedFunctionFromNative)' != ''"
+                                    Value="$(_EnableCallingManagedFunctionFromNative)"
+                                    Trim="true" />
+
+    <RuntimeHostConfigurationOption Include="Internal.Runtime.InteropServices.InMemoryAssemblyLoader.IsSupported"
+                                    Condition="'$(_EnableIJWHostActivation)' != ''"
+                                    Value="$(_EnableIJWHostActivation)"
+                                    Trim="true" />
+
     <RuntimeHostConfigurationOption Include="System.ComponentModel.TypeConverter.EnableUnsafeBinaryFormatterInDesigntimeLicenseContextSerialization"
                                     Condition="'$(EnableUnsafeBinaryFormatterInDesigntimeLicenseContextSerialization)' != ''"
                                     Value="$(EnableUnsafeBinaryFormatterInDesigntimeLicenseContextSerialization)"
